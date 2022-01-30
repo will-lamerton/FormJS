@@ -1,6 +1,8 @@
 # FormJS
 A JavaScript framework for rendering and handling HTML forms. 📱
 
+![npm version](https://img.shields.io/npm/v/formjs-framework?style=flat-square)
+
 ## Introduction
 HTML forms are laborious – often repeating the same cocktail of creating DOM elements, handling events, input validation, requests, responses and more, all before the backend receives the request
 
