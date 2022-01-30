@@ -20,10 +20,10 @@ Then to initialise the framework simply import the script into your project thro
 
 ```js
 // As a module...
-import { FormJS } from 'formjs';
+import { FormJS } from 'formjs-framework';
 
 // Require...
-const FormJS = require('formjs').FormJS;
+const FormJS = require('formjs-framework').FormJS;
 ```
 
 And then create a FormJS instance that we can use to access the API and framework:
