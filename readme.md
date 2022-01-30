@@ -119,7 +119,7 @@ Every created form instance *must* include the following in it's options:
 | Option | Description |
 |--------|-------------|
 | `ref: string` | An internal FormJS reference to the instance. Think of this like a unique ID. |
-| `form: string|object` | This is an object that describes our forms elements or an ID reference to a pre-existing form.|
+| `form: string,object` | This is an object that describes our forms elements or an ID reference to a pre-existing form.|
 | `onsubmit: object` | This is an object that describes what happens when our form is submitted. |
 
 ### Lifecycle Hooks
