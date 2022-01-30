@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+    <head>
+        <meta charset="utf-8">
+        <title></title>
+    </head>
+    <body>
+        <div id="create-form"></div>
+        <div id="contact-form-wrapper"></div>
+
+        <script type="module">
+            import { FormJS } from '../dist/formJS.mjs';
+
+            const formjs = new FormJS;
+            const formOptions = {
+                ref: 'test',
+                el: 'create-form',
+
+                form: {
+                    id: 'test',
+
+                    elements: [
+                        {
+                            el: 'input',
+                            validate: 'isEmail|isNotDisposableEmail',
+
+                            attributes: {
+                                type: 'text',
+                                id: 'input-test'
+                            }
+                        },
+                        {
+                            el: 'input',
+                            attributes: {
+                                type: 'submit',
+                                id: 'submit-test'
+                            }
+                        }
+                    ]
+                },
+
+                onsubmit: {
+                    type: 'GET', // optional, defaults to post.
+                    url: 'test', // required.
+
+                    before() {
+                        const test = formjs.validate(
+                            'input-test',
+                            'isEmail'
+                        );
+
+                        test.then(result => {
+                            console.log('success');
+                        }).catch(result => {
+                            console.log('fail');
+                        });
+                    }
+                }
+            };
+
+            const form = formjs.create(formOptions).mount();
+
+        </script>
+    </body>
+</html>
