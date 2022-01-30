@@ -12,7 +12,7 @@ FormJS aims to fix the above by providing an efficient, neat and declarative fra
 You can install FormJS through NPM:
 
 ```js
-npm install formjs
+npm install formjs-framework
 ```
 
 ## Usage
