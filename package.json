@@ -2,9 +2,9 @@
     "main": "dist/formJS.js",
     "module": "dist/formJS.mjs",
     "typings": "dist/formJS.d.ts",
-    "name": "brainf-ck",
+    "name": "formjs-framework",
     "description": "A JavaScript framework for rendering and handling HTML forms.",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "scripts": {
         "build": "rollup -c",
         "build-dev": "rollup -c -w",

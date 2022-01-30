@@ -128,9 +128,11 @@ export class Form
                     throw response;
                 }
 
-                // Parse the response body and if a `success` method exists on
-                // the onsubmit object, run it.
-                response.json().then((data: any) => (this.onsubmit['success'] !== undefined) ? this.onsubmit['success'](data) : false);
+                // If a `success` method exists on the onsubmit object, run it
+                // passing the response.
+                if (this.onsubmit['success'] !== undefined) {
+                    this.onsubmit['success'](response);
+                }
             }).catch((error: object) => {
                 // If an `error` method exists on the onsubmit object, run it.
                 if (this.onsubmit['error'] !== undefined) {
