@@ -4,7 +4,7 @@
     "typings": "dist/formJS.d.ts",
     "name": "formjs-framework",
     "description": "A JavaScript framework for rendering and handling HTML forms.",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "scripts": {
         "build": "rollup -c",
         "build-dev": "rollup -c -w",

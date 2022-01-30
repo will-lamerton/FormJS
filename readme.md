@@ -388,7 +388,7 @@ I would say use at your own discretion. The bottom line is that *it works*. Howe
 
 ## Contributing
 In the spirit of open source, contributions are welcome! Please feel free to add to this repo through pull requests and issues.
-s
+
 **Here are a couple of dev details:**
 - FormJS is written in TypeScript under the hood.
 - Distribution is bundled with Rollup.
