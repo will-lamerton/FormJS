@@ -384,7 +384,7 @@ Nevertheless, although I love dev and working on projects like this, for the mom
 - Support for JSX-esque code for forms so either you can pass the form as a JSON object, or as HTML.
 
 ## Is This Framework Production Ready?
-I would say, use at your own discretion. The bottom line is that although *it works*. However, I'm still increasing testing coverage and trialing the framework within my other projects and until that's done, I can't promise the FormJS will be entirely stable. I will keep this updated though.
+I would say use at your own discretion. The bottom line is that *it works*. However, I'm still increasing testing coverage and trialing the framework within my other projects and until that's done, I can't promise the FormJS will be entirely stable. I will keep this updated though.
 
 ## Contributing
 In the spirit of open source, contributions are welcome! Please feel free to add to this repo through pull requests and issues.
