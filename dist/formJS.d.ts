@@ -4,8 +4,8 @@
 declare class Instance {
     ref: string;
     el: undefined | string;
-    form: string | object;
-    onsubmit: object;
+    form: string | FormObject;
+    onsubmit: OnsubmitObject;
     created: undefined | Function;
     beforeMount: undefined | Function;
     mounted: undefined | Function;
@@ -15,10 +15,10 @@ declare class Instance {
      * Constructor
      * @param {string} ref - form instance reference.
      * @param {undefined|string} el - element to attach the form to.
-     * @param {string|object} form - form object containing what the form needs to look like.
-     * @param {object} onsubmit - onsubmit object containing what needs to happen when the form is submitted.
+     * @param {string|Form} form - form object containing what the form needs to look like.
+     * @param {OnsubmitObject} onsubmit - onsubmit object containing what needs to happen when the form is submitted.
      */
-    constructor(ref: string, el: undefined | string, form: string | object, onsubmit: object, created: undefined | Function, beforeMount: undefined | Function, mounted: undefined | Function);
+    constructor(ref: string, el: undefined | string, form: string | FormObject, onsubmit: OnsubmitObject, created: undefined | Function, beforeMount: undefined | Function, mounted: undefined | Function);
     /**
      * Method to mount the form instance.
      * @return {void}
@@ -41,7 +41,7 @@ declare class Instance {
  * FormJS library entry point.
  */
 declare class FormJS {
-    options: object;
+    options: FormJSOptions;
     instances: Array<Instance>;
     validate: object;
     version: () => string;
@@ -49,10 +49,10 @@ declare class FormJS {
     error: (error: string) => void;
     /**
      * Constructor to initialise the form instance.
-     * @param {object} options - FormJS options.
+     * @param {Options} options - FormJS options.
      * @return {Instance}
      */
-    create: (options: object) => Instance | Error;
+    create: (options: FormJSOptions) => Instance | Error;
 }
 
 export { FormJS };

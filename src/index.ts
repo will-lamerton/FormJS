@@ -8,7 +8,7 @@ import { Validator } from './lib/validator';
  */
 export class FormJS
 {
-    options: object;
+    options: FormJSOptions;
     instances: Array<Instance> = [];
 
     // One line methods...
@@ -19,10 +19,10 @@ export class FormJS
 
     /**
      * Constructor to initialise the form instance.
-     * @param {object} options - FormJS options.
+     * @param {Options} options - FormJS options.
      * @return {Instance}
      */
-    create = (options: object): Instance|Error =>
+    create = (options: FormJSOptions): Instance|Error =>
     {
         // Let's start creating the form...
         try {
@@ -31,13 +31,13 @@ export class FormJS
 
             // Init a new instance.
             const instance = new Instance(
-                options['ref'],
-                options['el'],
-                options['form'],
-                options['onsubmit'],
-                options['created'],
-                options['beforeMount'],
-                options['mounted']
+                options.ref,
+                options.el,
+                options.form,
+                options.onsubmit,
+                options.created,
+                options.beforeMount,
+                options.mounted
             );
 
             // Let's set our options so they're accessible in other API functions.

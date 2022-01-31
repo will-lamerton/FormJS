@@ -5,17 +5,17 @@ import { Validator } from './validator';
  */
 export class Form
 {
-    form: object|string;
-    onsubmit: object;
+    form: string|FormObject;
+    onsubmit: OnsubmitObject;
     wrappingEl: string;
 
     /**
      * Constructor
-     * @param {object|string} form - form definition.
-     * @param {object} onsubmit - onsubmit definition.
+     * @param {string|FormObject} form - form definition.
+     * @param {OnsubmitObject} onsubmit - onsubmit definition.
      * @param {string} wrappingEl - wrapping element for form.
      */
-    constructor(form: object|string, onsubmit: object, wrappingEl: string)
+    constructor(form: string|FormObject, onsubmit: OnsubmitObject, wrappingEl: string)
     {
         this.form = form;
         this.onsubmit = onsubmit;
@@ -29,10 +29,15 @@ export class Form
     create(): Promise<Function>
     {
         // Create a new promise...
-        return new Promise((resolve: Function) => {
+        return new Promise((resolve: Function, reject: Function) => {
+            // Reject if wrong type.
+            if (typeof this.form === 'string') {
+                return reject();
+            }
+
             // Create a new form element and set the ID equal to the passed ID.
             const form = document.createElement('form');
-            form.setAttribute('id', this.form['id']);
+            form.setAttribute('id', this.form.id);
 
             // Append the form to the chosen `el` in the DOM structure.
             document.getElementById(this.wrappingEl).appendChild(form);
@@ -50,10 +55,15 @@ export class Form
      */
     createInternalElements(rootElement: string): Promise<Function>
     {
-        return new Promise((resolve: Function) => {
+        return new Promise((resolve: Function, reject: Function) => {
+            // If wrong type, reject.
+            if (typeof this.form === 'string') {
+                return reject();
+            }
+
             // We'll loop through the elements specified and create new elements
             // inside the form.
-            this.form['elements'].forEach((element: object) => {
+            this.form.elements.forEach((element: object) => {
                 const elementName = element['el'];
                 const formElement = document.createElement(elementName);
 
@@ -91,7 +101,7 @@ export class Form
      */
     bind(): Promise<Function> {
         return new Promise(() => {
-             document.getElementById((typeof this.form === 'string') ? this.form : this.form['id']).addEventListener('submit', (e: any) => this.submit(e));
+             document.getElementById((typeof this.form === 'string') ? this.form : this.form.id).addEventListener('submit', (e: any) => this.submit(e));
         });
     }
 
@@ -107,8 +117,8 @@ export class Form
         e.preventDefault();
 
         // Before we submit, if there's a a `before` method to run, run it.
-        if (this.onsubmit['before'] !== undefined) {
-            this.onsubmit['before']();
+        if (this.onsubmit.before !== undefined) {
+            this.onsubmit.before();
         }
 
         // Get form data to submit with it.
@@ -119,8 +129,8 @@ export class Form
         this.validate(formData).then(() => {
             // Create a new Fetch API request with the URL & method from the onsubmit
             // object and the JSON data from the form.
-            fetch(this.onsubmit['url'], {
-                method: this.onsubmit['type'],
+            fetch(this.onsubmit.url, {
+                method: this.onsubmit.type,
                 body: JSON.stringify(formData)
             }).then((response: any) => {
                 // If the response was not `ok`, catch the error.
@@ -130,13 +140,13 @@ export class Form
 
                 // If a `success` method exists on the onsubmit object, run it
                 // passing the response.
-                if (this.onsubmit['success'] !== undefined) {
-                    this.onsubmit['success'](response);
+                if (this.onsubmit.success !== undefined) {
+                    this.onsubmit.success(response);
                 }
             }).catch((error: object) => {
                 // If an `error` method exists on the onsubmit object, run it.
-                if (this.onsubmit['error'] !== undefined) {
-                    this.onsubmit['error'](error);
+                if (this.onsubmit.error !== undefined) {
+                    this.onsubmit.error(error, 'request/response');
                 }
             });
         });
@@ -166,8 +176,8 @@ export class Form
                     .then(() => resolve())
                     // Failed.
                     .catch(test => {
-                        if (this.onsubmit['error'] !== undefined) {
-                            this.onsubmit['error'](test.failed, 'validator');
+                        if (this.onsubmit.error() !== undefined) {
+                            this.onsubmit.error(test.failed, 'validator');
                         }
                         return reject(test.failed);
                     })

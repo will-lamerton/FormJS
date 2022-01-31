@@ -4,7 +4,7 @@ A JavaScript framework for rendering and handling HTML forms. 📱
 ![npm version](https://img.shields.io/npm/v/formjs-framework?style=flat-square)
 
 ## Introduction
-HTML forms are laborious – often repeating the same cocktail of creating DOM elements, handling events, input validation, requests, responses and more, all before the backend receives the request
+HTML forms are laborious – often repeating the same cocktail of creating DOM elements, handling events, input validation, requests, responses and more, all before the backend receives the request.
 
 All of this *can* mean working in several files and languages which takes time and if your application is large enough, you risk creating unmaintainable code filled with different methods of creating and handling front-end forms.
 
@@ -376,17 +376,19 @@ Asides from the ones already mentioned, FormJS provides a library of API methods
 ## Roadmap 🛣
 I built FormJS because of a need for it within my companies tech stack, a way to standardise forms to keep our codebases neat, predictable and written properly. However, we're always on a mission to ship products faster yet still keep them reliable and FormJS helps with that providing a lightweight framework to do all of the above.
 
-Nevertheless, although I love dev and working on projects like this, for the moment, it can be in my spare time. Be that as it may, I do have a list of features I would love to work as and when I can:
+Nevertheless, although I love dev and working on projects like this, for the moment, it can only be in my spare time. Be that as it may, I do have a list of features I would love to work as and when I can:
 
 - `onsubmit` can be a method with completely optional code and this function is called if so.
 - Add headers to `onsubmit` object.
+- Add option `includeFormData` defaulting to `true` to `onsubmit` option so it's optional to send form data.
 - Front-end website if enough interest.
 - More validations: This might be a good reference: https://laravel.com/docs/8.x/validation#available-validation-rules
-- More tests.
+- More testing coverage.
 - Support for JSX-esque code for forms so either you can pass the form as a JSON object, or as HTML.
+- Framework wrappers for Vue, React, Angular etc.
 
 ## Is This Framework Production Ready?
-I would say use at your own discretion. The bottom line is that *it works*. However, I'm still increasing testing coverage and trialing the framework within my other projects and until that's done, I can't promise the FormJS will be entirely stable. I will keep this updated though.
+I would say use at your own discretion. The bottom line is that *it works*. However, I'm still increasing testing coverage and trialing the framework within my other projects and until that's done, I can't promise that FormJS will be entirely stable. I will keep this updated though.
 
 ## Contributing
 In the spirit of open source, contributions are welcome! Please feel free to add to this repo through pull requests and issues.

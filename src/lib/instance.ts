@@ -8,8 +8,8 @@ export class Instance
     // Class variables.
     ref: string;
     el: undefined|string;
-    form: string|object;
-    onsubmit: object;
+    form: string|FormObject;
+    onsubmit: OnsubmitObject;
 
     // Lifecycle event hooks.
     created: undefined|Function;
@@ -17,21 +17,21 @@ export class Instance
     mounted: undefined|Function;
 
     // One line methods...
-    getAllElements = (): Array<Element> => [...document.getElementById(this.form['id']).children];
+    getAllElements = (): Array<Element> => (typeof this.form === 'object') ? [...document.getElementById(this.form.id).children] : [...document.getElementById(this.form).children];
     unmount = (): void => document.getElementById(this.form['id']).remove();
 
     /**
      * Constructor
      * @param {string} ref - form instance reference.
      * @param {undefined|string} el - element to attach the form to.
-     * @param {string|object} form - form object containing what the form needs to look like.
-     * @param {object} onsubmit - onsubmit object containing what needs to happen when the form is submitted.
+     * @param {string|Form} form - form object containing what the form needs to look like.
+     * @param {OnsubmitObject} onsubmit - onsubmit object containing what needs to happen when the form is submitted.
      */
     constructor(
         ref: string,
         el: undefined|string,
-        form: string|object,
-        onsubmit: object,
+        form: string|FormObject,
+        onsubmit: OnsubmitObject,
         created: undefined|Function,
         beforeMount: undefined|Function,
         mounted: undefined|Function
@@ -112,10 +112,18 @@ export class Instance
      * @return {string}
      */
     getInputValue(elementId: string): string {
-        const elements = this.form['elements'].filter((element: object) => element['attributes']['id'] === elementId);
+        // If the element was already present in the DOM when we created the instance
+        // then we won't have a record of it. Throw an error here.
+        if (typeof this.form !== 'object') {
+            throw window.__FORMJS__.error(`Trying to get input value of an element that doesn't exist on the instance \`${this.ref}\`.`)
+        }
 
+        // Else, filter elements to check that it exists. Then return.
+        const elements = this.form.elements.filter((element: object) => element['attributes']['id'] === elementId);
+
+        // If there is no element on the instance with that ID, throw an error.
         if (elements.length === 0) {
-            window.__FORMJS__.error(`Trying to get input value of an element that doesn't exist on the instance \`${this.ref}\`.`)
+            throw window.__FORMJS__.error(`Trying to get input value of an element that doesn't exist on the instance \`${this.ref}\`.`)
         }
 
         return document.getElementById(elementId)['value'];
