@@ -1,5 +1,6 @@
-# FormJS
-A JavaScript framework for rendering and handling HTML forms. 📱
+<p align='center'><img src='https://i.imgur.com/c8qrM6L.png' width='200px'/></p>
+
+<h4 align='center'>A JavaScript framework for rendering and handling HTML forms. 📱</h4>
 
 ![npm version](https://img.shields.io/npm/v/formjs-framework?style=flat-square)
 
