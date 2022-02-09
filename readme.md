@@ -176,7 +176,7 @@ const form = formjs.create({
         elements: [ // <- Required
             {
                 el: 'input', // <- Required | HTML element type.
-                text: 'innerHTML' // <- Optional | Set innerHTML of element.
+                text: 'innerHTML', // <- Optional | Set innerHTML of element.
 
                 attributes: { // <- Required | HTML attributes to add.
                     id: 'element-id' // <- Required | set input ID.
@@ -240,9 +240,9 @@ const form = formjs.create({
     ...options,
 
     onsubmit: {
-        type: 'POST' // <- Required | `GET` or `POST`
-        url: '/url-to-send-request-to' // <- Required.
-        includeFormData: true // <- Optional | `true` or `false`. Defaults to `true`.
+        type: 'POST', // <- Required | `GET` or `POST`
+        url: '/url-to-send-request-to', // <- Required.
+        includeFormData: true, // <- Optional | `true` or `false`. Defaults to `true`.
 
         before() {
             // Optional | Run this code before any request or validations are made.
@@ -282,10 +282,10 @@ const form = formjs.create({
             {
                 el: 'input',
 
-                validate: 'minLength:5|hasNumber|hasSymbol'
+                validate: 'minLength:5|hasNumber|hasSymbol',
 
                 attributes: {
-                    id: 'new-input'
+                    id: 'new-input',
                     type: 'text'
                 }
             },
