@@ -119,7 +119,7 @@ export class Instance
         }
 
         // Else, filter elements to check that it exists. Then return.
-        const elements = this.form.elements.filter((element: object) => element['attributes']['id'] === elementId);
+        const elements = this.form.elements.filter((element: FormObjectElements) => element.attributes.id === elementId);
 
         // If there is no element on the instance with that ID, throw an error.
         if (elements.length === 0) {

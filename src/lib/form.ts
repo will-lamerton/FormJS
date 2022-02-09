@@ -63,19 +63,19 @@ export class Form
 
             // We'll loop through the elements specified and create new elements
             // inside the form.
-            this.form.elements.forEach((element: object) => {
-                const elementName = element['el'];
+            this.form.elements.forEach((element: FormObjectElements) => {
+                const elementName = element.el;
                 const formElement = document.createElement(elementName);
 
                 // If element has 'text' property, then we can set the innerHTML.
                 if (element.hasOwnProperty('text')) {
-                    formElement.innerHTML = element['text'];
+                    formElement.innerHTML = element.text;
                 }
 
                 // We'll also loop through the attributes passed in each element and
                 // mount those too if they're present.
                 if (element.hasOwnProperty('attributes')) {
-                    for (const [key, value] of Object.entries(element['attributes'])) {
+                    for (const [key, value] of Object.entries(element.attributes)) {
                         formElement.setAttribute(key, value);
                     }
                 }
@@ -86,7 +86,7 @@ export class Form
                 // Lastly, let's check if there are any rooted elements to mount too.
                 // If there is, re-run this method.
                 if (element.hasOwnProperty('elements')) {
-                    this.createInternalElements(element['attributes']['id']);
+                    this.createInternalElements(element.attributes.id);
                 }
             });
 
@@ -121,8 +121,14 @@ export class Form
             this.onsubmit.before();
         }
 
-        // Get form data to submit with it.
-        const formData = Object.fromEntries(new FormData(e.target).entries());
+        // The user can choose to submit the form with or without form data.
+        //
+        // Determine whether or not we need to with the below statement and either
+        // set `formData` equal to the forms data *or* an empty object.
+        const formData = (this.onsubmit.includeFormData === true || this.onsubmit.includeFormData === undefined) ?
+            Object.fromEntries(new FormData(e.target).entries()) :
+            {}
+        ;
 
         // If form passed as type object, then we could need to run validations
         // too...

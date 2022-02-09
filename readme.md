@@ -242,37 +242,25 @@ const form = formjs.create({
     onsubmit: {
         type: 'POST' // <- Required | `GET` or `POST`
         url: '/url-to-send-request-to' // <- Required.
+        includeFormData: true // <- Optional | `true` or `false`. Defaults to `true`.
 
-        /**
-         * Optional.
-         *
-         * Run this code before any request or validations are made.
-         */
         before() {
-            //
+            // Optional | Run this code before any request or validations are made.
         },
 
         /**
-         * Optional.
-         *
-         * Run this code after the request is sent and a response
-         * indicating success is received.
          * @param  {object} response - response from submission.
          */
         success(response) {
-            //
+            // Run this code after the request is sent and a response indicating success is received.
         },
 
         /**
-         * Optional.
-         *
-         * Run this code before or after the request is sent because of something
-         * going wrong. This could be a server or front-end error.
          * @param  {object|string} error - error message.
          * @param  {null|string} [source=null] - system where the error took place if available.
          */
         error(error, source = null) {
-            //
+            // Run this code before or after the request is sent because of something going wrong. This could be a server or front-end error.
         }
     }
 });
@@ -330,7 +318,7 @@ Alternatively you can call the `validate` method as part of the FormJS instance 
                 formjs.validate('foo', 'hasCapital|hasSymbol').then(result => {
                     console.log(result) // Success.
                 }).catch(result => {
-                    console.log(error) // Error.
+                    console.log(result) // Error.
                 });
             }
         }
@@ -381,7 +369,6 @@ Nevertheless, although I love dev and working on projects like this, for the mom
 
 - `onsubmit` can be a method with completely optional code and this function is called if so.
 - Add headers to `onsubmit` object.
-- Add option `includeFormData` defaulting to `true` to `onsubmit` option so it's optional to send form data.
 - Front-end website if enough interest.
 - More validations: This might be a good reference: https://laravel.com/docs/8.x/validation#available-validation-rules
 - More testing coverage.
