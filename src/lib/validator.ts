@@ -4,41 +4,41 @@
 export class Validator
 {
     // Class variables.
-    form: null|object|string;
+    form: null|FormObject|string;
     formData: null|object;
-    validationsToMake: Array<object> = [];
+    validationsToMake: Array<ValidationsToMake> = [];
 
     /**
      * Constructor
-     * @param {object} form - form object.
-     * @param {object} formData - form data object.
+     * @param {null|FormObject|string} form - form object.
+     * @param {null\object} formData - form data object.
      */
-    constructor(form: null|object|string = null, formData: null|object = null)
+    constructor(form: null|FormObject|string = null, formData: null|object = null)
     {
         this.form = form;
         this.formData = formData;
 
         // If we have a form object, then we need to gather the form
         // validations required into an array to action.
-        if (form !== null) {
+        if (this.form !== null && typeof this.form !== 'string') {
             this.sortValidations(this.form);
         }
     }
 
     /**
      * Method to run validation tests.
-     * @param {null|object} options - options { el: string, rules: string }
-     * @return {object}
+     * @param {null|AdHocValidation} options - options { el: string, rules: string }
+     * @return {Promise<Function>}
      */
-    async test(options: null|object = null): Promise<any>
+    async test(options: null|AdHocValidation = null): Promise<Function>
     {
         // Sometimes the validation class will be used for ad-hoc validations
         // by passing an object. If one isn't passed though, we'll assume we're
         // testing all validations across a whole form...
         if (options !== null) {
             this.validationsToMake.push({
-                element: options['el'],
-                criteria: options['rules'],
+                element: options.el,
+                criteria: options.rules,
             });
         }
 
@@ -50,33 +50,33 @@ export class Validator
         validationLayer: for (const validation of this.validationsToMake) {
             // Split validations down into an array of criteria.
             // Each criteria is seperated by `|`.
-            const allCriteria = validation['criteria'].split('|');
+            const allCriteria = validation.criteria.split('|');
 
             // Then, loop through each criteria and match it to a test.
             for (const criteria of allCriteria) {
                 if (criteria.includes('minLength:')) {
-                    result = this.testMinLength(validation['element'], criteria)
+                    result = this.testMinLength(validation.element, criteria)
                 }
                 else if (criteria.includes('maxLength:')) {
-                    result = this.testMaxLength(validation['element'], criteria);
+                    result = this.testMaxLength(validation.element, criteria);
                 }
                 else if (criteria.includes('isEmail')) {
-                    result = this.testIsEmail(validation['element']);
+                    result = this.testIsEmail(validation.element);
                 }
                 else if (criteria.includes('isNotDisposableEmail')) {
-                    await this.testIsDisposableEmail(validation['element']).then(response => result = response);
+                    await this.testIsDisposableEmail(validation.element).then(response => result = response);
                 }
                 else if (criteria.includes('hasNumber')) {
-                    result = this.testHasNumber(validation['element']);
+                    result = this.testHasNumber(validation.element);
                 }
                 else if (criteria.includes('hasSymbol')) {
-                    result = this.testHasSymbol(validation['element']);
+                    result = this.testHasSymbol(validation.element);
                 }
                 else if (criteria.includes('hasCapital')) {
-                    result = this.testHasCapital(validation['element']);
+                    result = this.testHasCapital(validation.element);
                 }
                 else if (criteria.includes('required')) {
-                    result = this.testRequired(validation['element']);
+                    result = this.testRequired(validation.element);
                 }
 
                 // If no matching type, set result to an issue.
@@ -89,7 +89,7 @@ export class Validator
 
                 // At the end of each loop, check to see if a test failed and if
                 // it did, break to the outer layer...
-                if (result['passed'] === false) {
+                if (result.passed === false) {
                     break validationLayer;
                 }
             }
@@ -105,13 +105,13 @@ export class Validator
     /**
      * Method to sort through the validations in the form object and create a
      * list of them to action.
-     * @param {object|string} form - form object containing elements.
+     * @param {FormObject|FormObjectElements} form - form object containing elements.
      * @return {void}
      */
-    private sortValidations(form: object|string): void
+    private sortValidations(form: any): void
     {
         // Loop through passed form object.
-        form['elements'].forEach((element: object) => {
+        form.elements.forEach((element: FormObjectElements) => {
             // If the element doesn't have property `validate`, return.
             if (!element.hasOwnProperty('validate')) {
                 return;
@@ -119,8 +119,8 @@ export class Validator
 
             // Push element id and validation criteria to the list to test.
             this.validationsToMake.push({
-                element: element['attributes']['id'],
-                criteria: element['validate'],
+                element: element.attributes.id,
+                criteria: element.validate,
             });
 
             if (element.hasOwnProperty('elements')) {
@@ -144,7 +144,7 @@ export class Validator
         const criteriaValue = parseInt(criteria.split(':')[1]);
 
         // If the element value length is less than the min length...
-        if (document.getElementById(element)['value'].length  < criteriaValue) {
+        if (document.getElementById(element).value.length  < criteriaValue) {
             // Return failed validation.
             return {
                 passed: false,
@@ -169,7 +169,7 @@ export class Validator
         const criteriaValue = parseInt(criteria.split(':')[1]);
 
         // If the element value length is less than the min length...
-        if (document.getElementById(element)['value'].length  > criteriaValue) {
+        if (document.getElementById(element).value.length  > criteriaValue) {
             // Return failed validation.
             return {
                 passed: false,
@@ -189,7 +189,7 @@ export class Validator
     private testIsEmail(element: string): object
     {
         // Get element value...
-        const criteriaValue = document.getElementById(element)['value'];
+        const criteriaValue = document.getElementById(element).value;
 
         // Regex from: https://stackoverflow.com/questions/46155/whats-the-best-way-to-validate-an-email-address-in-javascript
         if (/^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()\.,;\s@\"]+\.{0,1})+([^<>()\.,;:\s@\"]{2,}|[\d\.]+))$/.test(criteriaValue) === false) {
@@ -213,7 +213,7 @@ export class Validator
     {
         // Get the element value and split it by `@` into an array. The second
         // array element will be the domain to test.
-        const criteriaValue = document.getElementById(element)['value'].split('@')[1];
+        const criteriaValue = document.getElementById(element).value.split('@')[1];
 
         /**
          * Then we'll call an API which will check an up to date disposable email
@@ -246,7 +246,7 @@ export class Validator
     private testHasNumber(element: string): object
     {
         // Get element value...
-        const criteriaValue = document.getElementById(element)['value'];
+        const criteriaValue = document.getElementById(element).value;
 
         // Test if element value contains a number.
         if (/\d/.test(criteriaValue) === false) {
@@ -269,7 +269,7 @@ export class Validator
     private testHasSymbol(element: string): object
     {
         // Get element value...
-        const criteriaValue = document.getElementById(element)['value'];
+        const criteriaValue = document.getElementById(element).value;
 
         // Test if the element value contains a symbol.
         if (/[!@#$£%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/.test(criteriaValue) === false) {
@@ -292,7 +292,7 @@ export class Validator
     private testHasCapital(element: string): object
     {
         // Get element value...
-        const criteriaValue = document.getElementById(element)['value'];
+        const criteriaValue = document.getElementById(element).value
 
         // Test if element value has a capital letter.
         if (/[A-Z]/.test(criteriaValue) === false) {
@@ -316,7 +316,7 @@ export class Validator
     private testRequired(element: string): object
     {
         // Get element value...
-        const criteriaValue = document.getElementById(element)['value'];
+        const criteriaValue = document.getElementById(element).value;
 
         // Test if element value length is 0.
         if (criteriaValue.length <= 0) {

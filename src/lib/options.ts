@@ -11,33 +11,33 @@ import { ElementOptionsStructure } from './library';
 export const Options = {
     /**
      * Method to test all required options against all criteria.
-     * @param {object} options - options object to test with.
+     * @param {FormJSOptions} options - options object to test with.
      * @param {Array<object>} - current FormJS instances to test against.
      */
-    test(options: object, instances: Array<object>)
+    test(options: FormJSOptions, instances: Array<object>)
     {
         // Test options exist and correct types on root options...
         this.testExistsAndTypes(options, RootOptionsStructure.requiredOptions());
 
         // Test `ref` and `el` are unique across all instances as long as they're
         // not `undefined`.
-        if (options['ref'] !== undefined) {
-            this.testIsUniqueInInstances('ref', instances, options['ref']);
+        if (options.ref !== undefined) {
+            this.testIsUniqueInInstances('ref', instances, options.ref);
         }
 
-        if (options['el'] !== undefined) {
-            this.testIsUniqueInInstances('el', instances, options['el']);
+        if (options.el !== undefined) {
+            this.testIsUniqueInInstances('el', instances, options.el);
         }
 
         // If form is a string...
-        if (typeof options['form'] === 'string') {
+        if (typeof options.form === 'string') {
             // Test that the form is unique across all instances.
-            this.testIsUniqueInInstances('form', instances, options['form']);
+            this.testIsUniqueInInstances('form', instances, options.form);
         }
         // Else if an object with `elements` array longer than 0.
-        else if (options['form']['elements'].length > 0) {
+        else if (options.form.elements.length > 0) {
             // Loop these elements and test options and correct types in them.
-            options['form']['elements'].forEach((element: object) => {
+            options.form.elements.forEach((element: object) => {
                 this.testExistsAndTypes(element, ElementOptionsStructure.requiredOptions());
             });
         }

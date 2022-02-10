@@ -126,6 +126,6 @@ export class Instance
             throw window.__FORMJS__.error(`Trying to get input value of an element that doesn't exist on the instance \`${this.ref}\`.`)
         }
 
-        return document.getElementById(elementId)['value'];
+        return document.getElementById(elementId).value;
     }
 }

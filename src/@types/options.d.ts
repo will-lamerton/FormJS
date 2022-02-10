@@ -23,10 +23,12 @@ declare interface FormObject {
  * Form object elements types.
  */
 declare interface FormObjectElements {
+    id: string,
     el: string,
     text: undefined|string,
     attributes: FormObjectElementAttributes,
-    elements: FormObjectElements,
+    elements: Array<FormObjectElements>,
+    validate: undefined|string,
 }
 
 /**
