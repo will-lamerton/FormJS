@@ -1,9 +1,9 @@
 const FormJS = require('../../dist/formJS.js').FormJS;
 const formjs = new FormJS;
 
-test('You cannot pass the wrong `el` option type when creating a form', () => {
-    const consoleSpy = jest.spyOn(console, 'error');
+const consoleSpy = jest.spyOn(console, 'error');
 
+test('You cannot pass the wrong `el` option type when creating a form', () => {
     // `el` expects string so we'll pass a number.
     formjs.create({
         ref: 'form',
@@ -16,8 +16,6 @@ test('You cannot pass the wrong `el` option type when creating a form', () => {
 });
 
 test('`el` cannot be a duplicate of an already existing `form` instance', () => {
-    const consoleSpy = jest.spyOn(console, 'error');
-
     // Setup body.
     document.body.innerHTML = '<div id="form"></div>';
 
@@ -30,7 +28,7 @@ test('`el` cannot be a duplicate of an already existing `form` instance', () => 
             elements: [],
         },
         onsubmit: {
-            type: '',
+            method: '',
             url: '',
         }
     });
@@ -44,7 +42,7 @@ test('`el` cannot be a duplicate of an already existing `form` instance', () => 
             elements: [],
         },
         onsubmit: {
-            type: '',
+            method: '',
             url: '',
         }
     });

@@ -1,10 +1,9 @@
 const FormJS = require('../../dist/formJS.js').FormJS;
 const formjs = new FormJS;
 
-// Setup Jest to spy on the console.
-test('You have to pass a `form` option when creating a form', () => {
-    const consoleSpy = jest.spyOn(console, 'error');
+const consoleSpy = jest.spyOn(console, 'error');
 
+test('You have to pass a `form` option when creating a form', () => {
     formjs.create({
         ref: 'form',
         el: 'new-form',
@@ -16,8 +15,6 @@ test('You have to pass a `form` option when creating a form', () => {
 });
 
 test('You cannot pass the wrong `form` option type when creating a form', () => {
-    const consoleSpy = jest.spyOn(console, 'error');
-
     // `form` expects either a string OR object so we'll pass a number.
     formjs.create({
         ref: 'form',
@@ -32,8 +29,6 @@ test('You cannot pass the wrong `form` option type when creating a form', () => 
 });
 
 test('You have to pass an `id` in the `form` option if passed as an object when creating a form', () => {
-    const consoleSpy = jest.spyOn(console, 'error');
-
     formjs.create({
         ref: 'form',
         el: 'new-form',
@@ -50,8 +45,6 @@ test('You have to pass an `id` in the `form` option if passed as an object when 
 });
 
 test('You cannot pass the wrong `id` type to `form` option when creating a form', () => {
-    const consoleSpy = jest.spyOn(console, 'error');
-
     formjs.create({
         ref: 'form',
         el: 'new-form',
@@ -68,8 +61,6 @@ test('You cannot pass the wrong `id` type to `form` option when creating a form'
 });
 
 test('You have to pass `elements` in the `form` option if passed as an object when creating a form', () => {
-    const consoleSpy = jest.spyOn(console, 'error');
-
     formjs.create({
         ref: 'form',
         el: 'new-form',
@@ -84,8 +75,6 @@ test('You have to pass `elements` in the `form` option if passed as an object wh
 });
 
 test('You cannot pass the wrong `elements` type to `form` option when creating a form', () => {
-    const consoleSpy = jest.spyOn(console, 'error');
-
     formjs.create({
         ref: 'form',
         el: 'new-form',
@@ -103,8 +92,6 @@ test('You cannot pass the wrong `elements` type to `form` option when creating a
 });
 
 test('If `form` passed as a string, it cannot be a duplicate of an already existing `form` instance', () => {
-    const consoleSpy = jest.spyOn(console, 'error');
-
     // Set up our document body
     document.body.innerHTML = '<form id="form-one"></form>';
 
@@ -113,7 +100,7 @@ test('If `form` passed as a string, it cannot be a duplicate of an already exist
         ref: 'form1',
         form: 'form-one',
         onsubmit: {
-            type: '',
+            method: '',
             url: '',
         }
     });
@@ -123,7 +110,7 @@ test('If `form` passed as a string, it cannot be a duplicate of an already exist
         ref: 'form2',
         form: 'form-one', // <- Duplicate.
         onsubmit: {
-            type: '',
+            method: '',
             url: '',
         }
     });

@@ -1,9 +1,9 @@
 const FormJS = require('../../dist/formJS.js').FormJS;
 const formjs = new FormJS;
 
-test('You have to pass a `ref` option when creating a form', () => {
-    const consoleSpy = jest.spyOn(console, 'error');
+const consoleSpy = jest.spyOn(console, 'error');
 
+test('You have to pass a `ref` option when creating a form', () => {
     formjs.create({});
 
     expect(consoleSpy).toHaveBeenCalledWith(
@@ -12,8 +12,6 @@ test('You have to pass a `ref` option when creating a form', () => {
 });
 
 test('You cannot pass the wrong `ref` option type when creating a form', () => {
-    const consoleSpy = jest.spyOn(console, 'error');
-
     // `ref` expects string so we'll pass a number.
     formjs.create({
         ref: 1,
@@ -25,8 +23,6 @@ test('You cannot pass the wrong `ref` option type when creating a form', () => {
 });
 
 test('`ref` cannot be a duplicate of an already existing `form` instance', () => {
-    const consoleSpy = jest.spyOn(console, 'error');
-
     // Set up our document body
     document.body.innerHTML = '<form id="form-one"></form><form id="form-two"></form>';
 
@@ -35,7 +31,7 @@ test('`ref` cannot be a duplicate of an already existing `form` instance', () =>
         ref: 'form',
         form: 'form-one',
         onsubmit: {
-            type: '',
+            method: '',
             url: '',
         }
     });
@@ -45,7 +41,7 @@ test('`ref` cannot be a duplicate of an already existing `form` instance', () =>
         ref: 'form', // <- Duplicate.
         form: 'form-two',
         onsubmit: {
-            type: '',
+            method: '',
             url: '',
         }
     });

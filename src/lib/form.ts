@@ -5,6 +5,7 @@ import { Validator } from './validator';
  */
 export class Form
 {
+    fetchApiParams = {};
     form: string|FormObject;
     onsubmit: OnsubmitObject;
     wrappingEl: string;
@@ -101,7 +102,36 @@ export class Form
      */
     bind(): Promise<Function> {
         return new Promise(() => {
-             document.getElementById((typeof this.form === 'string') ? this.form : this.form.id).addEventListener('submit', (e: any) => this.submit(e));
+            // Bind form...
+            document.getElementById((typeof this.form === 'string') ? this.form : this.form.id).addEventListener('submit', (e: any) => this.submit(e));
+
+            // Set up non-dynamic Fetch API params for submission.
+
+            // Here's a list of keys we *cannot* add to the params as they're
+            // reserved for FormJS workings.
+            const blacklistedKeys = ['method', 'url', 'body', 'before', 'success', 'error'];
+            Object.entries(this.onsubmit).forEach(([key,value]) => {
+                // Assume to begin with the key on loop is not blacklisted.
+                let containsBlacklistedKey = false;
+
+                // For every key on loop, loop through blakclisted keys and
+                // look for a match
+                blacklistedKeys.forEach(blacklistedKey => {
+                    if (blacklistedKey == key) {
+                        // Set `containsBlacklistedKey` equal to true and break
+                        // this loop.
+                        containsBlacklistedKey = true;
+                        return;
+                    }
+                });
+
+                // Check to see if the above loop found a match and if it didn't
+                // add the key=>value to the list of params to be used during
+                // submission.
+                if (containsBlacklistedKey === false) {
+                    this.fetchApiParams[key] = value;
+                }
+            });
         });
     }
 
@@ -136,8 +166,10 @@ export class Form
             // Create a new Fetch API request with the URL & method from the onsubmit
             // object and the JSON data from the form.
             fetch(this.onsubmit.url, {
-                method: this.onsubmit.type,
-                body: JSON.stringify(formData)
+                method: this.onsubmit.method,
+                body: JSON.stringify(formData),
+                ...this.fetchApiParams
+
             }).then((response: any) => {
                 // If the response was not `ok`, catch the error.
                 if (response['ok'] === false) {

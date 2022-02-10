@@ -233,16 +233,18 @@ Alternatively, you can create a form in your markup and then pass it's ID to the
 ### The `onsubmit` Option
 The `onsubmit` option is passed to the library to describe what the form should do upon being submitted. It includes information about the type of request to make, where to make the request to and what should happen upon success or failure of the request.
 
-When defining the `onsubmit` option we *must*  include a request type and URL. However, also included are some methods that will be called and ran upon success or failure. These are optional though. See the below example:
+When defining the `onsubmit` option we *must*  include a request method and URL. However, also included are some methods that will be called and ran upon success or failure as well as a number of optional parameters. See the below example:
 
 ```js
 const form = formjs.create({
     ...options,
 
     onsubmit: {
-        type: 'POST', // <- Required | `GET` or `POST`
+        method: 'POST', // <- Required | `GET` or `POST`
         url: '/url-to-send-request-to', // <- Required.
         includeFormData: true, // <- Optional | `true` or `false`. Defaults to `true`.
+
+        ...otherFetchAPIParams, // <- Optional | You can optionally add any Fetch API accepted key=>value pair here and FormJS will add it to the list of parameter sent with the request as long as it doesn't conflict with another FormJS parameter.
 
         before() {
             // Optional | Run this code before any request or validations are made.
@@ -252,7 +254,7 @@ const form = formjs.create({
          * @param  {object} response - response from submission.
          */
         success(response) {
-            // Run this code after the request is sent and a response indicating success is received.
+            // Optional | Run this code after the request is sent and a response indicating success is received.
         },
 
         /**
@@ -260,11 +262,17 @@ const form = formjs.create({
          * @param  {null|string} [source=null] - system where the error took place if available.
          */
         error(error, source = null) {
-            // Run this code before or after the request is sent because of something going wrong. This could be a server or front-end error.
+            // Optional | Run this code before or after the request is sent because of something going wrong. This could be a server or front-end error.
         }
     }
 });
 ```
+
+You'll notice the available callback methods but also `includeFormData` boolean which dictates whether or not the request is sent with the form data attached or not. It defaults to `true` if you don't include it.
+
+Additionally, you'll notice a blanket `...otherFetchAPIParams`, you can replace this with any number of parameters that the Fetch API accepts. See this link on [Using the Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch) to see available parameters.
+
+*Note*: FormJS will only check that the passed parameters are not conflicting with internal variables and *not* whether the passed parameter is one the Fetch API recognises as a suppliable option. This could or could not cause an error.
 
 ### Form Validation
 Built into the library is also the ability to validate form inputs through pre-defined tests. If you want a form input to be validated you can do this by passing `validate` as a key inside the `form` objects `elements` array or by calling the `validate` method on the FormJS instance. Validations are passed as as a single string separated by a "|" for the library to parse. See the below examples:
@@ -296,37 +304,29 @@ const form = formjs.create({
 
 As you can see, the above adds three validations that will be ran once the form is submitted and if any of them fail, the form won't submit and the `onsubmit` object `error` method will be called if it exists.
 
-Alternatively you can call the `validate` method as part of the FormJS instance and make ad-hoc validations as you go. See the below example.
+Alternatively you can call the `validate` method as part of the FormJS instance and make ad-hoc validations as you go without being tied to a specific form. This means you can work with pre-existing forms and "sprinkle" in validations as you go. See the below example.
 
 ```html
-<input id="foo"></input>
+<input id="foo" type="text"></input>
 
 <script>
-    const form = formjs.create({
-        ...options,
+    const formjs = new FormJS;
 
-        onsubmit: {
-            ...options,
-
-            before() {
-                /**
-                 * Validate an input...
-                 * @param {string} el - ID of the element you wish to validate.
-                 * @param {string} rules - Validation rules to test against.
-                 * @return {Promise<object>} - Promise with a validation status object.
-                 */
-                formjs.validate('foo', 'hasCapital|hasSymbol').then(result => {
-                    console.log(result) // Success.
-                }).catch(result => {
-                    console.log(result) // Error.
-                });
-            }
-        }
+    /**
+     * Validate an input...
+     * @param {string} el - ID of the element you wish to validate.
+     * @param {string} rules - Validation rules to test against.
+     * @return {Promise<object>} - Promise with a validation status object.
+     */
+    formjs.validate('foo', 'hasCapital|hasSymbol').then(result => {
+        console.log(result) // Success.
+    }).catch(result => {
+        console.log(result) // Error.
     });
 </script>
 ```
 
-This way of validating will only return an output object for you as the user to handle.
+This way of validating will only return an output object as a promise for you as the user to handle.
 
 A list of validations that can be used are below:
 
@@ -368,7 +368,6 @@ I built FormJS because of a need for it within my companies tech stack, a way to
 Nevertheless, although I love dev and working on projects like this, for the moment, it can only be in my spare time. Be that as it may, I do have a list of features I would love to work as and when I can:
 
 - `onsubmit` can be a method with completely optional code and this function is called if so.
-- Add headers to `onsubmit` object.
 - Front-end website if enough interest.
 - More validations: This might be a good reference: https://laravel.com/docs/8.x/validation#available-validation-rules
 - More testing coverage.

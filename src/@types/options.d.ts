@@ -40,8 +40,9 @@ declare interface FormObjectElementAttributes {
  * Onsubmit object option types.
  */
 declare interface OnsubmitObject {
-    type: string,
+    method: string,
     url: string,
+    headers: undefined|object,
     includeFormData: undefined|boolean,
     before: undefined|Function,
     success: undefined|Function,

@@ -3,7 +3,7 @@
  */
 export const Library = {
     name: 'FormJS',
-    version: '1.0.9',
+    version: '1.0.10',
 }
 
 /**
@@ -55,7 +55,7 @@ export const RootOptionsStructure = {
                     type;
                     return [
                         {
-                            option: 'type',
+                            option: 'method',
                             acceptedTypes: ['string'],
                         },
                         {
