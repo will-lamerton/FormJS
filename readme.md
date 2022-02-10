@@ -89,7 +89,7 @@ const contactForm = formjs.create({
     },
 
     onsubmit: {
-        type: 'POST',
+        method: 'POST',
         url: '/api/submit-form',
     },
 });
@@ -223,7 +223,7 @@ Alternatively, you can create a form in your markup and then pass it's ID to the
         form: 'new-form', // <- This references the above form by ID that already exists.
 
         onsubmit: { // <- Required | FormJS binds to your form.
-            type: 'POST',
+            method: 'POST',
             url: '/api',
         }
     });
