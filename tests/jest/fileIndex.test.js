@@ -1,9 +1,6 @@
 const FormJS = require('../../dist/formJS.js').FormJS;
 const formjs = new FormJS;
 
-// Setup Jest to spy on the console.
-const consoleSpy = jest.spyOn(console, 'error');
-
 test('You can create a new instance of FormJS', () => {
     expect(typeof formjs).toBe('object');
 

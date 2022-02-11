@@ -48,11 +48,15 @@ declare class FormJS {
     getInstances: () => Array<Instance>;
     error: (error: string) => void;
     /**
+     * Constructor
+     */
+    constructor();
+    /**
      * Constructor to initialise the form instance.
      * @param {Options} options - FormJS options.
      * @return {Instance}
      */
-    create: (options: FormJSOptions) => Instance | Error;
+    create: (options: FormJSOptions) => Instance | MakeInstanceFailed;
 }
 
 export { FormJS };

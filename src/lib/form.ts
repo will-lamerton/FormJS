@@ -98,10 +98,10 @@ export class Form
 
     /**
      * Method to bind the form to onsubmit event.
-     * @return {Promise<Function>}
+     * @return {Promise<any>}
      */
     bind(): Promise<Function> {
-        return new Promise(() => {
+        return new Promise((resolve: Function) => {
             // Bind form...
             document.getElementById((typeof this.form === 'string') ? this.form : this.form.id).addEventListener('submit', (e: any) => this.submit(e));
 
@@ -132,6 +132,8 @@ export class Form
                     this.fetchApiParams[key] = value;
                 }
             });
+
+            return resolve();
         });
     }
 
