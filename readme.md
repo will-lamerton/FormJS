@@ -258,10 +258,9 @@ const form = formjs.create({
         },
 
         /**
-         * @param  {object|string} error - error message.
-         * @param  {null|string} [source=null] - system where the error took place if available.
+         * @param  {object} error - error message.
          */
-        error(error, source = null) {
+        error(error) {
             // Optional | Run this code before or after the request is sent because of something going wrong. This could be a server or front-end error.
         }
     }

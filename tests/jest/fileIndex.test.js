@@ -20,3 +20,8 @@ test('You can create a new instance of FormJS', () => {
     expect(formjs.error).toBeDefined();
     expect(typeof formjs.error).toBe('function');
 });
+
+// validate test
+// version test
+// getInstances test
+// error test

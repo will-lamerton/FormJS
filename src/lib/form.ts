@@ -186,7 +186,10 @@ export class Form
             }).catch((error: object) => {
                 // If an `error` method exists on the onsubmit object, run it.
                 if (this.onsubmit.error !== undefined) {
-                    this.onsubmit.error(error, 'request/response');
+                    this.onsubmit.error({
+                        error: error,
+                        source: 'request/response'
+                    });
                 }
             });
         });
@@ -216,8 +219,11 @@ export class Form
                     .then(() => resolve())
                     // Failed.
                     .catch(test => {
-                        if (this.onsubmit.error() !== undefined) {
-                            this.onsubmit.error(test.failed, 'validator');
+                        if (this.onsubmit.error !== undefined) {
+                            this.onsubmit.error({
+                                error: test.failed,
+                                source: 'validator'
+                            });
                         }
                         return reject(test.failed);
                     })
