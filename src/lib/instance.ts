@@ -18,7 +18,8 @@ export class Instance
 
     // One line methods...
     getAllElements = (): Array<Element> => (typeof this.form === 'object') ? [...document.getElementById(this.form.id).children] : [...document.getElementById(this.form).children];
-    unmount = (): void => document.getElementById(this.form['id']).remove();
+    getInputValue = (elementId: string) => document.getElementById(elementId).value;
+    unmount = (): void => (typeof this.form === 'object') ? document.getElementById(this.form.id).remove() : window.__FORMJS__.warn('This form wasn\'t created by FormJS but instead passed as an ID to the instance. Therefore, FormJS cannot remove it from the DOM. To have the ability to mount/unmount a form, create a new one by defining it on the `form` object. If you called this method via `destroy` the instance has however, been removed from the framework\'s record of instances.');
 
     /**
      * Constructor
@@ -104,28 +105,5 @@ export class Instance
         this.unmount();
         // Remove instance reference.
         window.__FORMJS__.instances = window.__FORMJS__.instances.filter(current => current !== this);
-    }
-
-    /**
-     * Method to get a value of a chosen input by ID.
-     * @param {string} elementId - element id.
-     * @return {string}
-     */
-    getInputValue(elementId: string): string {
-        // If the element was already present in the DOM when we created the instance
-        // then we won't have a record of it. Throw an error here.
-        if (typeof this.form !== 'object') {
-            throw window.__FORMJS__.error(`Trying to get input value of an element that doesn't exist on the instance \`${this.ref}\`.`)
-        }
-
-        // Else, filter elements to check that it exists. Then return.
-        const elements = this.form.elements.filter((element: FormObjectElements) => element.attributes.id === elementId);
-
-        // If there is no element on the instance with that ID, throw an error.
-        if (elements.length === 0) {
-            throw window.__FORMJS__.error(`Trying to get input value of an element that doesn't exist on the instance \`${this.ref}\`.`)
-        }
-
-        return document.getElementById(elementId).value;
     }
 }
