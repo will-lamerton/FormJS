@@ -16,6 +16,7 @@ export class FormJS
     version = (): string => Version;
     getInstances = (): Array<Instance> => [...this.instances];
     error = (error: string): void => console.error(`[FORMJS ERROR] ${error}`);
+    warn = (warning: string): void => console.warn(`[FORM JS WARNING] ${warning}`);
 
     /**
      * Constructor
