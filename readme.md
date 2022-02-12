@@ -244,7 +244,7 @@ const form = formjs.create({
         url: '/url-to-send-request-to', // <- Required.
         includeFormData: true, // <- Optional | `true` or `false`. Defaults to `true`.
 
-        ...otherFetchAPIParams, // <- Optional | You can optionally add any Fetch API accepted key=>value pair here and FormJS will add it to the list of parameter sent with the request as long as it doesn't conflict with another FormJS parameter.
+        ...otherFetchAPIParams, // <- Optional | You can optionally add any Fetch API accepted key=>value pairs here and FormJS will add it to the list of parameters sent with the request as long as it doesn't conflict with another FormJS option.
 
         before() {
             // Optional | Run this code before any request or validations are made.
@@ -350,7 +350,7 @@ Asides from the ones already mentioned, FormJS provides a library of API methods
 | `.create()` | `options: object` | Create a new form instance, returns a form instance. |
 | `.version()` | None | Get the version of FormJS returned as a string. |
 | `.validate()` | `el: string`, `rules: string` | Run an ad-hoc validation of a passed element (as an ID) against passed rules. Returns the result as a promise. |
-| '.getInstances()' | None | Returns an array<Instance> of form instances. |
+| `.getInstances()` | None | Returns an array<Instance> of form instances. |
 
 ### Individual Form Instances
 | Method | Arguments | Description |
