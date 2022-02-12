@@ -5,7 +5,7 @@ const formjs = new FormJS;
 const consoleErrorSpy = jest.spyOn(console, 'error');
 const consoleLogSpy = jest.spyOn(console, 'log');
 
-test('You can create a new form instance', () => {
+test('You can create a new form instance using the `create` method', () => {
     // Create a form.
     const form = formjs.create({
         ref: 'form',
@@ -93,7 +93,7 @@ test('You cannot create a new form instance if option validation failed', () => 
     );
 });
 
-test('You can mount a new form instance', async () => {
+test('You can mount a new form instance using the `mount` method', async () => {
     // Set up our document body
     document.body.innerHTML = '<div id="wrapper"></div>';
 
@@ -163,7 +163,282 @@ test('You can mount a new form instance', async () => {
     expect(document.body.innerHTML).toBe('<div id="wrapper"><form id="form"><input type="email" name="email" id="input-email" required="true"><button type="submit" id="input-submit">submit</button></form></div>');
 });
 
-// getAllElements test.
-// unmount test.
-// destroy test.
-// getInputValue test.
+test('You can get all elements in a form using the `getAllElements` method', async () => {
+    // Set up our document body
+    document.body.innerHTML = '<div id="wrapper"></div>';
+
+    // Reset FormJS
+    const formjs = new FormJS;
+
+    // Create a form.
+    const form = formjs.create({
+        ref: 'form',
+        el: 'wrapper',
+        form: {
+            id: 'form',
+            elements: [
+                {
+                    el: 'input',
+                    validate: 'isEmail',
+
+                    attributes: {
+                        type: 'email',
+                        name: 'email',
+                        id: 'input-email',
+                        required: true,
+                    }
+                },
+                {
+                    el: 'button',
+                    text: 'submit',
+
+                    attributes: {
+                        type: 'submit',
+                        id: 'input-submit',
+                    }
+                }
+            ]
+        },
+
+        onsubmit: {
+            method: 'POST',
+            url: '/test'
+        }
+    });
+
+    // Mount form.
+    form.mount();
+
+    // Wait for all async code to execute...
+    await new Promise(process.nextTick);
+
+    // Call method and assign to a variable.
+    const elements = form.getAllElements();
+
+    expect(typeof elements).toBe('object');
+    expect(elements.length).toBe(2);
+
+    for (let i=0; i<elements.length; i++) {
+        expect(typeof elements[i]).toBe('object');
+    }
+});
+
+test('You can unmount a form via the `unmount` method', async () => {
+    // Set up our document body
+    document.body.innerHTML = '<div id="wrapper"></div>';
+
+    // Reset FormJS
+    const formjs = new FormJS;
+
+    // Create a form.
+    const form = formjs.create({
+        ref: 'form',
+        el: 'wrapper',
+        form: {
+            id: 'form',
+            elements: [
+                {
+                    el: 'input',
+                    validate: 'isEmail',
+
+                    attributes: {
+                        type: 'email',
+                        name: 'email',
+                        id: 'input-email',
+                        required: true,
+                    }
+                },
+                {
+                    el: 'button',
+                    text: 'submit',
+
+                    attributes: {
+                        type: 'submit',
+                        id: 'input-submit',
+                    }
+                }
+            ]
+        },
+
+        onsubmit: {
+            method: 'POST',
+            url: '/test'
+        }
+    });
+
+    // Mount form.
+    form.mount();
+
+    // Wait for all async code to execute...
+    await new Promise(process.nextTick);
+
+    // The DOM should have a form in it that looks like below.
+    expect(document.body.innerHTML).toBe('<div id="wrapper"><form id="form"><input type="email" name="email" id="input-email" required="true"><button type="submit" id="input-submit">submit</button></form></div>');
+
+    // And the FormJS instance should have one instance on it.
+    expect(formjs.getInstances().length).toBe(1);
+
+    // Now, we'll call `unmount`.
+    form.unmount();
+
+    // The DOM should now not have the form in it.
+    expect(document.body.innerHTML).toBe('<div id="wrapper"></div>');
+
+    // But, the instance should remain registered with the framework.
+    expect(formjs.getInstances().length).toBe(1);
+});
+
+test('You cannot unmount a form that was passed as an ID', async () => {
+    // Set up our document body
+    document.body.innerHTML = '<form id="form"></form>';
+
+    // Reset FormJS
+    const formjs = new FormJS;
+
+    // Create a form.
+    const form = formjs.create({
+        ref: 'form',
+        el: 'wrapper',
+        form: 'form',
+        onsubmit: {
+            method: 'POST',
+            url: '/test'
+        }
+    });
+
+    // Setup mocks.
+    const warnSpy = jest.spyOn(console, 'warn');
+
+    // Mount form.
+    form.mount();
+
+    // Wait for all async code to execute...
+    await new Promise(process.nextTick);
+
+    // The DOM should not have changed.
+    expect(document.body.innerHTML).toBe('<form id="form"></form>');
+
+    // Next, we'll unmount the form.
+    form.unmount();
+
+    // The DOM should not have changed.
+    expect(document.body.innerHTML).toBe('<form id="form"></form>');
+
+    // And a warning should have shown too.
+    expect(warnSpy).toHaveBeenCalledWith(
+        expect.stringContaining('[FORM JS WARNING] This form wasn\'t created by FormJS but instead passed as an ID to the instance. Therefore, FormJS cannot remove it from the DOM. To have the ability to mount/unmount a form, create a new one by defining it on the `form` object. If you called this method via `destroy` the instance has however, been removed from the framework\'s record of instances.'),
+    );
+});
+
+test('You can destroy a form instance via the `destroy` method', async () => {
+    // Set up our document body
+    document.body.innerHTML = '<div id="wrapper"></div>';
+
+    // Reset FormJS
+    const formjs = new FormJS;
+
+    // Create a form.
+    const form = formjs.create({
+        ref: 'form',
+        el: 'wrapper',
+        form: {
+            id: 'form',
+            elements: [
+                {
+                    el: 'input',
+                    validate: 'isEmail',
+
+                    attributes: {
+                        type: 'email',
+                        name: 'email',
+                        id: 'input-email',
+                        required: true,
+                    }
+                },
+                {
+                    el: 'button',
+                    text: 'submit',
+
+                    attributes: {
+                        type: 'submit',
+                        id: 'input-submit',
+                    }
+                }
+            ]
+        },
+
+        onsubmit: {
+            method: 'POST',
+            url: '/test'
+        }
+    });
+
+    // Mount form.
+    form.mount();
+
+    // Wait for all async code to execute...
+    await new Promise(process.nextTick);
+
+    // The DOM should have a form in it that looks like below.
+    expect(document.body.innerHTML).toBe('<div id="wrapper"><form id="form"><input type="email" name="email" id="input-email" required="true"><button type="submit" id="input-submit">submit</button></form></div>');
+
+    // And the FormJS instance should have one instance on it.
+    expect(formjs.getInstances().length).toBe(1);
+
+    // Now, we'll call `destroy`.
+    form.destroy();
+
+    // The DOM should now not have the form in it.
+    expect(document.body.innerHTML).toBe('<div id="wrapper"></div>');
+
+    // And this time, the instance should no longer be stored by the framework.
+    expect(formjs.getInstances().length).toBe(0);
+});
+
+test('You can get the value of an input via the `getInputValue` method', async () => {
+    // Set up our document body
+    document.body.innerHTML = '<div id="wrapper"></div>';
+
+    // Reset FormJS
+    const formjs = new FormJS;
+
+    // Create a form.
+    const form = formjs.create({
+        ref: 'form',
+        el: 'wrapper',
+        form: {
+            id: 'form',
+            elements: [
+                {
+                    el: 'input',
+                    validate: 'isEmail',
+
+                    attributes: {
+                        type: 'email',
+                        name: 'email',
+                        id: 'input-email',
+                        required: true,
+                        value: 'test value' // <- we'll add this.
+                    }
+                },
+            ]
+        },
+
+        onsubmit: {
+            method: 'POST',
+            url: '/test'
+        }
+    });
+
+    // Mount form.
+    form.mount();
+
+    // Wait for all async code to execute...
+    await new Promise(process.nextTick);
+
+    // We'll now get the value of our only input and store it in a variable.
+    const inputValue = form.getInputValue('input-email');
+
+    expect(typeof inputValue).toBe('string');
+    expect(inputValue).toBe('test value');
+});

@@ -10,6 +10,7 @@ declare class Instance {
     beforeMount: undefined | Function;
     mounted: undefined | Function;
     getAllElements: () => Array<Element>;
+    getInputValue: (elementId: string) => string;
     unmount: () => void;
     /**
      * Constructor
@@ -29,12 +30,6 @@ declare class Instance {
      * @return {void}
      */
     destroy(): void;
-    /**
-     * Method to get a value of a chosen input by ID.
-     * @param {string} elementId - element id.
-     * @return {string}
-     */
-    getInputValue(elementId: string): string;
 }
 
 /**
@@ -47,6 +42,7 @@ declare class FormJS {
     version: () => string;
     getInstances: () => Array<Instance>;
     error: (error: string) => void;
+    warn: (warning: string) => void;
     /**
      * Constructor
      */
