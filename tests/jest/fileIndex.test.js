@@ -35,7 +35,7 @@ test('You can run an ad-hoc validation', async () => {
     expect(typeof resultToTest).toBe('object');
     expect(resultToTest).toMatchObject({
         passed: false,
-        failed: 'Test must be a valid email!'
+        failed: 'Input must be a valid email!'
     });
 
     // Run validation that will pass:
@@ -43,6 +43,8 @@ test('You can run an ad-hoc validation', async () => {
 
     formjs.validate('test', 'isEmail').then((result) => {
         resultToTest = result;
+    }).catch((result) => {
+        console.log(result)
     });
 
     await new Promise(process.nextTick);

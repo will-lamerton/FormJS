@@ -1,10 +1,7 @@
 /**
- * FormJS library options.
+ * FormJS library version.
  */
-export const Library = {
-    name: 'FormJS',
-    version: '1.0.11',
-}
+export const Version = '1.0.11';
 
 /**
  * FormJS options structure to test against.

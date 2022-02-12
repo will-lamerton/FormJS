@@ -65,8 +65,7 @@ export class Form
             // We'll loop through the elements specified and create new elements
             // inside the form.
             this.form.elements.forEach((element: FormObjectElements) => {
-                const elementName = element.el;
-                const formElement = document.createElement(elementName);
+                const formElement = document.createElement(element.el);
 
                 // If element has 'text' property, then we can set the innerHTML.
                 if (element.hasOwnProperty('text')) {

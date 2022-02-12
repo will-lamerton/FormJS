@@ -7,6 +7,30 @@ export class Validator
     form: null|FormObject|string;
     formData: null|object;
     validationsToMake: Array<ValidationsToMake> = [];
+    regexTests = [
+        {
+            // Regex from: https://stackoverflow.com/questions/46155/whats-the-best-way-to-validate-an-email-address-in-javascript
+            name: 'isEmail',
+            pattern: new RegExp(/^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()\.,;\s@\"]+\.{0,1})+([^<>()\.,;:\s@\"]{2,}|[\d\.]+))$/),
+            errorMessage: 'Input must be a valid email!'
+        },
+        {
+            name: 'hasCapital',
+            pattern: new RegExp(/[A-Z]/),
+            errorMessage: 'Input must contain a capital letter!'
+        },
+        {
+            name: 'hasSymbol',
+            pattern: new RegExp(/[!@#$£%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/),
+            errorMessage: 'Input must contain a symbol!'
+        },
+        {
+            name: 'hasNumber',
+            pattern: new RegExp(/\d/),
+            errorMessage: 'Input must contain a number!'
+        }
+    ];
+    passed = { passed: true, failed: '' };
 
     /**
      * Constructor
@@ -43,7 +67,7 @@ export class Validator
         }
 
         // Setting result structure up.
-        let result: any = { passed: true, failed: '' };
+        let result: any = this.passed;
 
         // Create a new labelled `for` loop that then loops through every
         // validation to make.
@@ -52,31 +76,34 @@ export class Validator
             // Each criteria is seperated by `|`.
             const allCriteria = validation.criteria.split('|');
 
+            // Get value value to validate.
+            const value = document.getElementById(validation.element).value;
+
             // Then, loop through each criteria and match it to a test.
             for (const criteria of allCriteria) {
                 if (criteria.includes('minLength:')) {
-                    result = this.testMinLength(validation.element, criteria)
+                    result = this.testMinLength(value, criteria)
                 }
                 else if (criteria.includes('maxLength:')) {
-                    result = this.testMaxLength(validation.element, criteria);
+                    result = this.testMaxLength(value, criteria);
                 }
                 else if (criteria.includes('isEmail')) {
-                    result = this.testIsEmail(validation.element);
+                    result = this.testRegex('isEmail', value);
                 }
                 else if (criteria.includes('isNotDisposableEmail')) {
-                    await this.testIsDisposableEmail(validation.element).then(response => result = response);
+                    await this.testIsDisposableEmail(value).then(response => result = response);
                 }
                 else if (criteria.includes('hasNumber')) {
-                    result = this.testHasNumber(validation.element);
+                    result = this.testRegex('hasNumber', value);
                 }
                 else if (criteria.includes('hasSymbol')) {
-                    result = this.testHasSymbol(validation.element);
+                    result = this.testRegex('hasSymbol', value);
                 }
                 else if (criteria.includes('hasCapital')) {
-                    result = this.testHasCapital(validation.element);
+                    result = this.testRegex('hasCapital', value);
                 }
                 else if (criteria.includes('required')) {
-                    result = this.testRequired(validation.element);
+                    result = this.testRequired(value);
                 }
 
                 // If no matching type, set result to an issue.
@@ -126,94 +153,67 @@ export class Validator
             if (element.hasOwnProperty('elements')) {
                 this.sortValidations(element);
             }
-
-            return;
         });
     }
 
     /**
      * Method to test element value is at least X length.
-     * @param {string} element - element id.
+     * @param {string} value - element value.
      * @param {string} criteria - testing criteria to get min length.
      * @return {object}
      */
-    private testMinLength(element: string, criteria: string): object
+    private testMinLength(value: string, criteria: string): object
     {
         // Get min length by splitting criteria into an array by `:`. The second
         // array value will be our min length.
         const criteriaValue = parseInt(criteria.split(':')[1]);
 
         // If the element value length is less than the min length...
-        if (document.getElementById(element).value.length  < criteriaValue) {
+        return (value.length  < criteriaValue) ?
             // Return failed validation.
-            return {
+            {
                 passed: false,
-                failed: `${element.charAt(0).toUpperCase() + element.slice(1)} must be at least ${criteriaValue} characters!`
-            };
-        }
-
-        // Else return passed validation.
-        return { passed: true, failed: '' };
+                failed: `Input must be at least ${criteriaValue} characters!`
+            } :
+            // Else return passed validation.
+            this.passed
+        ;
     }
 
     /**
      * Method to test element value is not longer than X length.
-     * @param {string} element - element id.
+     * @param {string} value - element value.
      * @param {string} criteria - testing criteria to get max length.
      * @return {object}
      */
-    private testMaxLength(element: string, criteria: string): object
+    private testMaxLength(value: string, criteria: string): object
     {
         // Get max length by splitting criteria into an array by `:`. The second
         // array value will be our max length.
         const criteriaValue = parseInt(criteria.split(':')[1]);
 
         // If the element value length is less than the min length...
-        if (document.getElementById(element).value.length  > criteriaValue) {
+        return (value.length  > criteriaValue) ?
             // Return failed validation.
-            return {
+            {
                 passed: false,
-                failed: `${element.charAt(0).toUpperCase() + element.slice(1)} must be no more than ${criteriaValue} characters!`
-            };
-        }
-
-        // Else return passed validation.
-        return { passed: true, failed: '' };
-    }
-
-    /**
-     * Method to test that the element value is an email.
-     * @param {string} element - element id
-     * @return {object}
-     */
-    private testIsEmail(element: string): object
-    {
-        // Get element value...
-        const criteriaValue = document.getElementById(element).value;
-
-        // Regex from: https://stackoverflow.com/questions/46155/whats-the-best-way-to-validate-an-email-address-in-javascript
-        if (/^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()\.,;\s@\"]+\.{0,1})+([^<>()\.,;:\s@\"]{2,}|[\d\.]+))$/.test(criteriaValue) === false) {
-            // Return failed validation.
-            return {
-                passed: false,
-                failed: `${element.charAt(0).toUpperCase() + element.slice(1)} must be a valid email!`
-            };
-        }
-
-        // Else return passed validation.
-        return { passed: true, failed: '' };
+                failed: `Input must be no more than ${criteriaValue} characters!`
+            } :
+            // Else return passed validation.
+            this.passed
+        ;
     }
 
     /**
      * Method to test that the element value is not a disposable email.
-     * @param {string} element - element id
+     * @param {string} value - element value
      * @return {Promise<object>}
      */
-    private async testIsDisposableEmail(element: string): Promise<object>
+    private async testIsDisposableEmail(value: string): Promise<object>
     {
         // Get the element value and split it by `@` into an array. The second
         // array element will be the domain to test.
-        const criteriaValue = document.getElementById(element).value.split('@')[1];
+        const criteriaValue = value.split('@')[1];
 
         /**
          * Then we'll call an API which will check an up to date disposable email
@@ -226,12 +226,9 @@ export class Validator
                 return (data.disposable === true) ?
                 {
                     passed: false,
-                    failed: `${element.charAt(0).toUpperCase() + element.slice(1)} must not be a disposable email!`
+                    failed: `Input must not be a disposable email!`
                 } :
-                {
-                    passed: true,
-                    failed: ''
-                }
+                this.passed
             })
         ;
 
@@ -239,95 +236,46 @@ export class Validator
     }
 
     /**
-     * Method to test that the element value has a number.
-     * @param {string} element - element id
+     * Method to test element value against a regex based on predefined patterns
+     * in class variable `regexTests`.
+     * @param {string} testName - name of test name
+     * @param {string} value - element value
      * @return {object}
      */
-    private testHasNumber(element: string): object
+    private testRegex(testName: string, value: string): object
     {
-        // Get element value...
-        const criteriaValue = document.getElementById(element).value;
+        // Get correct validation.
+        const validation = this.regexTests.filter(test => test.name === testName)[0];
 
-        // Test if element value contains a number.
-        if (/\d/.test(criteriaValue) === false) {
+        // Test if element value against pattern.
+        return (new RegExp(validation.pattern).test(value) === false) ?
             // Return failed validation.
-            return {
+            {
                 passed: false,
-                failed: `${element.charAt(0).toUpperCase() + element.slice(1)} must contain a number!`
-            };
-        }
-
-        // Else return passed validation.
-        return { passed: true, failed: '' };
-    }
-
-    /**
-     * Method to test that the element value has a symbol.
-     * @param {string} element - element id
-     * @return {object}
-     */
-    private testHasSymbol(element: string): object
-    {
-        // Get element value...
-        const criteriaValue = document.getElementById(element).value;
-
-        // Test if the element value contains a symbol.
-        if (/[!@#$£%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/.test(criteriaValue) === false) {
-            // Return failed validation.
-            return {
-                passed: false,
-                failed: `${element.charAt(0).toUpperCase() + element.slice(1)} must contain a symbol!`
-            };
-        }
-
-        // Else return passed validation.
-        return { passed: true, failed: '' };
-    }
-
-    /**
-     * Method to test that the element value has a capital letter.
-     * @param {string} element - element id
-     * @return {object}
-     */
-    private testHasCapital(element: string): object
-    {
-        // Get element value...
-        const criteriaValue = document.getElementById(element).value
-
-        // Test if element value has a capital letter.
-        if (/[A-Z]/.test(criteriaValue) === false) {
-            // Return failed validation.
-            return {
-                passed: false,
-                failed: `${element.charAt(0).toUpperCase() + element.slice(1)} must contain a capital letter!`
-            };
-        }
-
-        // Else return passed validation.
-        return { passed: true, failed: '' };
+                failed: `${validation.errorMessage}`
+            } :
+            // Else return passed validation.
+            this.passed
+        ;
     }
 
     /**
      * Method to test an element value has been entered as the passed element
-     * is required.
-     * @param {string} element - element id.
+     * is required
+     * @param {string} value - element value.
      * @return {object}
      */
-    private testRequired(element: string): object
+    private testRequired(value: string): object
     {
-        // Get element value...
-        const criteriaValue = document.getElementById(element).value;
-
         // Test if element value length is 0.
-        if (criteriaValue.length <= 0) {
+        return (value.length <= 0) ?
             // Return failed validation.
-            return {
+            {
                 passed: false,
-                failed: `${element.charAt(0).toUpperCase() + element.slice(1)} is required and can't be submitted empty!`
-            };
-        }
-
-        // Else return passed validation.
-        return { passed: true, failed: '' };
+                failed: `Input is required and can't be submitted empty!`
+            } :
+            // Else return passed validation.
+            this.passed
+        ;
     }
 }

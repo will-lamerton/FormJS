@@ -1,4 +1,3 @@
-import { Library } from './library';
 import { RootOptionsStructure } from './library';
 import { ElementOptionsStructure } from './library';
 
@@ -61,7 +60,7 @@ export const Options = {
         //
         // Throw an error in this case.
         if (instances.filter(instance => instance[context] === payload).length > 0) {
-            throw `${Library.name} instance with \`${context}\`, \`${payload}\` is already in use.`;
+            throw `FormJS instance with \`${context}\`, \`${payload}\` is already in use.`;
         }
     },
 
@@ -87,7 +86,7 @@ export const Options = {
             // *unless* it's optional...
             if (!options.hasOwnProperty(requiredOption['option']) && requiredOption['optional'] === undefined) {
                 // Throwing an error if not present and not optional...
-                throw `Option \`${requiredOption['option']}\` in context \`${JSON.stringify(options)}\` required to create new ${Library.name} instance.`;
+                throw `Option \`${requiredOption['option']}\` in context \`${JSON.stringify(options)}\` required to create new FormJS instance.`;
             }
 
             // Then, we'll loop through our accepted types...

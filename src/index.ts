@@ -1,4 +1,4 @@
-import { Library } from './lib/library';
+import { Version } from './lib/library';
 import { Options } from './lib/options';
 import { Instance } from './lib/instance';
 import { Validator } from './lib/validator';
@@ -13,9 +13,9 @@ export class FormJS
 
     // One line methods...
     validate: object = (el: string, rules: string) => new Validator().test({ el: el, rules: rules });
-    version = (): string => Library.version;
+    version = (): string => Version;
     getInstances = (): Array<Instance> => [...this.instances];
-    error = (error: string): void => console.error(`[${Library.name.toUpperCase()} ERROR] ${error}`);
+    error = (error: string): void => console.error(`[FORMJS ERROR] ${error}`);
 
     /**
      * Constructor
@@ -61,7 +61,7 @@ export class FormJS
 
         /**
          * Error handling is done here for anything that went wrong above...
-         * @param {string} e
+         * @param {mixed} e
          */
         catch(e) {
             // Throw error at time of failure.
