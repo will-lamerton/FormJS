@@ -2,9 +2,11 @@
 
 <h4 align='center'>A JavaScript framework for rendering and handling HTML forms. 📱</h4><br>
 
-![npm version](https://img.shields.io/npm/v/formjs-framework)
-![size](https://img.badgesize.io/will-lamerton/FormJS/main/dist/formJS.mjs?compression=gzip)
-![size](https://img.badgesize.io/will-lamerton/FormJS/main/dist/formJS.mjs?compression=brotli)
+<div align='center'>
+<img src='https://img.shields.io/npm/v/formjs-framework'/>
+<img src='https://img.badgesize.io/will-lamerton/FormJS/main/dist/formJS.mjs?compression=gzip'/>
+<img src='https://img.badgesize.io/will-lamerton/FormJS/main/dist/formJS.mjs?compression=brotli'/>
+</div>
 
 ## Introduction
 HTML forms are laborious – often repeating the same cocktail of creating DOM elements, handling events, input validation, requests, responses and more, all before the backend receives the request.

@@ -1,7 +1,7 @@
 /**
  * FormJS library version.
  */
-export const Version = '1.0.14';
+export const Version = '1.0.15';
 
 /**
  * FormJS options structure to test against.
